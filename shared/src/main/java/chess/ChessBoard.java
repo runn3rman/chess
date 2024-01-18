@@ -83,12 +83,12 @@ public class ChessBoard {
         //for loop going through columns
         //compare the that and this (True until proven false) "this" is current class, "that" is comparison
         //if returns false unless I get out of both, then return true
-        return Arrays.equals(squares, that.squares);
+        return Arrays.deepEquals(squares, that.squares);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        return Arrays.deepHashCode(squares);
     }
 
     @Override
