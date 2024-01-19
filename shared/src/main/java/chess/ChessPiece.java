@@ -54,8 +54,20 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        ChessPieceMovement movement = switch (this.type) {
+            case PAWN -> new PawnMovement(board, myPosition);
+            case ROOK -> new RookMovement(board, myPosition); // Assuming a RookMovement class exists
+            case KNIGHT -> new KnightMovement(board, myPosition); // Assuming a KnightMovement class exists
+            case BISHOP -> new BishopMovement(board, myPosition); // Assuming a BishopMovement class exists
+            case QUEEN -> new QueenMovement(board, myPosition); // Assuming a QueenMovement class exists
+            case KING -> new KingMovement(board, myPosition); // Assuming a KingMovement class exists
+            default -> throw new IllegalStateException("Unknown PieceType: " + this.type);
+        };
+        return movement.pieceMoves();
+
     }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -70,3 +82,6 @@ public class ChessPiece {
         return Objects.hash(pieceColor, type);
     }
 }
+
+
+
