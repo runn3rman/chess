@@ -291,3 +291,51 @@ class QueenMovement extends ChessPieceMovement {
         return moves;
     }
 }
+
+class KingMovement extends ChessPieceMovement {
+    public KingMovement(ChessBoard board, ChessPosition position) {
+        super(board, position);
+    }
+
+
+    @Override
+    public Collection<ChessMove> pieceMoves() {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int[][] directions = {
+                {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}
+        }; // All 8 directions around the king
+
+
+        for (int[] direction : directions) {
+            int currentRow = position.getRow() + direction[0];
+            int currentColumn = position.getColumn() + direction[1];
+
+
+            if (currentRow <= 0 || currentRow > 8 || currentColumn <= 0 || currentColumn > 8) {
+                continue; // Skip if it's off the board
+            }
+
+
+            ChessPosition newPosition = new ChessPosition(currentRow, currentColumn);
+            ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+
+            if (pieceAtNewPosition != null) {
+                // If the piece is of the same color, it's blocked
+                if (pieceAtNewPosition.getTeamColor() == this.board.getPiece(this.position).getTeamColor()) {
+                    continue;
+                }
+                // If the piece is of the opposite color, it can be captured
+                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for special cases like promotion
+                continue;
+            }
+
+
+            // Add the move if the square is empty
+            moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for special cases like promotion
+        }
+
+
+        return moves;
+    }
+}
