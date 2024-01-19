@@ -83,5 +83,109 @@ class PawnMovement extends ChessPieceMovement {
     }
 }
 
+class RookMovement extends ChessPieceMovement {
+    public RookMovement(ChessBoard board, ChessPosition position) {
+        super(board, position);
+    }
+
+
+    @Override
+    public Collection<ChessMove> pieceMoves() {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}}; // Cross directions
+
+
+        for (int[] direction : directions) {
+            int currentRow = position.getRow();
+            int currentColumn = position.getColumn();
+
+
+            while (true) {
+                currentRow += direction[0];
+                currentColumn += direction[1];
+
+
+                if (currentRow <= 0 || currentRow > 8 || currentColumn <= 0 || currentColumn > 8) {
+                    break; // Stop if it's off the board
+                }
+
+
+                ChessPosition newPosition = new ChessPosition(currentRow, currentColumn);
+                ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+
+                if (pieceAtNewPosition != null) {
+                    // If the piece is of the same color, break (blocked)
+                    if (pieceAtNewPosition.getTeamColor() == this.board.getPiece(this.position).getTeamColor()) {
+                        break;
+                    }
+                    // If the piece is of the opposite color, add move (capture) and break
+                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                    break;
+                }
+
+
+                // Add the move if the square is empty
+                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+            }
+        }
+
+
+        return moves;
+    }
+}
+
+
+class KnightMovement extends ChessPieceMovement {
+    public KnightMovement(ChessBoard board, ChessPosition position) {
+        super(board, position);
+    }
+
+
+    @Override
+    public Collection<ChessMove> pieceMoves() {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int[][] directions = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}}; // Diagonal directions
+
+
+        for (int[] direction : directions) {
+            int currentRow = position.getRow();
+            int currentColumn = position.getColumn();
+
+
+            while (true) {
+                currentRow += direction[0];
+                currentColumn += direction[1];
+
+
+                if (currentRow <= 0 || currentRow > 8 || currentColumn <= 0 || currentColumn > 8) {
+                    break; // Stop if it's off the board
+                }
+
+
+                ChessPosition newPosition = new ChessPosition(currentRow, currentColumn);
+                ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
+
+
+                if (pieceAtNewPosition != null) {
+                    // If the piece is of the same color, break (blocked)
+                    if (pieceAtNewPosition.getTeamColor() == this.board.getPiece(this.position).getTeamColor()) {
+                        break;
+                    }
+                    // If the piece is of the opposite color, add move (capture) and break
+                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                    break;
+                }
+
+
+                // Add the move if the square is empty
+                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+            }
+        }
+
+
+        return moves;
+    }
+}
 
 
