@@ -21,89 +21,67 @@ class PawnMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        // Implement pawn-specific movement logic
-        return new ArrayList<>();
-    }
-}
-
-class RookMovement extends ChessPieceMovement {
-    public RookMovement(ChessBoard board, ChessPosition position) {
-        super(board, position);
-    }
-
-    @Override
-    public Collection<ChessMove> pieceMoves() {
-        // Implement rook-specific movement logic
-        return new ArrayList<>();
-    }
-}
-
-class KnightMovement extends ChessPieceMovement {
-    public KnightMovement(ChessBoard board, ChessPosition position) {
-        super(board, position);
-    }
-
-    @Override
-    public Collection<ChessMove> pieceMoves() {
-        // Implement knight-specific movement logic
-        return new ArrayList<>();
-    }
-}
-
-class BishopMovement extends ChessPieceMovement {
-    public BishopMovement(ChessBoard board, ChessPosition position) {
-        super(board, position);
-    }
-
-    @Override
-    public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> moves = new ArrayList<>();
-        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}}; // Diagonal directions
+        ChessPiece currentPawn = board.getPiece(position);
+        int direction = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 1 : -1;
+        int startRow = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 2 : 7;
+        int promotionRow = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 8 : 1;
 
-        for (int[] direction : directions) {
-            int currentRow = position.getRow();
-            int currentColumn = position.getColumn();
+        // Forward move (1 square)
+        addMoveIfValid(moves, position.getRow() + direction, position.getColumn(), false, promotionRow);
 
-            while (true) {
-                currentRow += direction[0];
-                currentColumn += direction[1];
-
-                if (currentRow <= 0 || currentRow > 8 || currentColumn <= 0 || currentColumn > 8) {
-                    break; // Stop if it's off the board
-                }
-
-                moves.add(new ChessMove(this.position, new ChessPosition(currentRow, currentColumn), null));
-
-                // Here, you would typically also check for other pieces in the path and break if needed
-            }
+        // Initial double move
+        if (position.getRow() == startRow && isPathClear(direction)) {
+            addMoveIfValid(moves, position.getRow() + 2 * direction, position.getColumn(), true, promotionRow);
         }
+
+        // Capture moves (diagonal) and promotion captures
+        addCaptureMoveIfValid(moves, position.getRow() + direction, position.getColumn() + 1, promotionRow);
+        addCaptureMoveIfValid(moves, position.getRow() + direction, position.getColumn() - 1, promotionRow);
 
         return moves;
     }
+
+    private void addMoveIfValid(Collection<ChessMove> moves, int row, int col, boolean isDoubleMove, int promotionRow) {
+        if (row <= 0 || row > 8 || col <= 0 || col > 8 || board.getPiece(new ChessPosition(row, col)) != null) {
+            return;
+        }
+        if (row == promotionRow) {
+            // Add a move for each possible promotion type
+            for (ChessPiece.PieceType promotionType : ChessPiece.PieceType.values()) {
+                if (promotionType != ChessPiece.PieceType.PAWN && promotionType != ChessPiece.PieceType.KING) {
+                    moves.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
+                }
+            }
+        } else {
+            moves.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
+        }
+    }
+
+    private void addCaptureMoveIfValid(Collection<ChessMove> moves, int row, int col, int promotionRow) {
+        if (row <= 0 || row > 8 || col <= 0 || col > 8) {
+            return;
+        }
+        ChessPiece targetPiece = board.getPiece(new ChessPosition(row, col));
+        if (targetPiece != null && targetPiece.getTeamColor() != board.getPiece(position).getTeamColor()) {
+            if (row == promotionRow) {
+                // Add a capture move for each possible promotion type
+                for (ChessPiece.PieceType promotionType : ChessPiece.PieceType.values()) {
+                    if (promotionType != ChessPiece.PieceType.PAWN && promotionType != ChessPiece.PieceType.KING) {
+                        moves.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
+                    }
+                }
+            } else {
+                moves.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
+            }
+        }
+    }
+
+    private boolean isPathClear(int direction) {
+        ChessPosition positionInFront = new ChessPosition(position.getRow() + direction, position.getColumn());
+        return board.getPiece(positionInFront) == null;
+    }
 }
 
 
-class QueenMovement extends ChessPieceMovement {
-    public QueenMovement(ChessBoard board, ChessPosition position) {
-        super(board, position);
-    }
-
-    @Override
-    public Collection<ChessMove> pieceMoves() {
-        // Implement queen-specific movement logic
-        return new ArrayList<>();
-    }
-}
-
-class KingMovement extends ChessPieceMovement {
-    public KingMovement(ChessBoard board, ChessPosition position) {
-        super(board, position);
-    }
-
-    @Override
-    public Collection<ChessMove> pieceMoves() {
-        // Implement king-specific movement logic
-        return new ArrayList<>();
-    }
-}
 
