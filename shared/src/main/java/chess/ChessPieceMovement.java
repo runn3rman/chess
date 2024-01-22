@@ -1,7 +1,7 @@
 package chess;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
+
 public abstract class ChessPieceMovement {
     protected ChessBoard board;
     protected ChessPosition position;
@@ -21,28 +21,28 @@ class PawnMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> possibilities = new ArrayList<>();
         ChessPiece currentPawn = board.getPiece(position);
         int direction = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 1 : -1;
         int startRow = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 2 : 7;
         int promotionRow = currentPawn.getTeamColor() == ChessGame.TeamColor.WHITE ? 8 : 1;
 
         // Forward move (1 square)
-        addMoveIfValid(moves, position.getRow() + direction, position.getColumn(), false, promotionRow);
+        addAValidMove(possibilities, position.getRow() + direction, position.getColumn(), false, promotionRow);
 
         // Initial double move
         if (position.getRow() == startRow && isPathClear(direction)) {
-            addMoveIfValid(moves, position.getRow() + 2 * direction, position.getColumn(), true, promotionRow);
+            addAValidMove(possibilities, position.getRow() + 2 * direction, position.getColumn(), true, promotionRow);
         }
 
-        // Capture moves (diagonal) and promotion captures
-        addCaptureMoveIfValid(moves, position.getRow() + direction, position.getColumn() + 1, promotionRow);
-        addCaptureMoveIfValid(moves, position.getRow() + direction, position.getColumn() - 1, promotionRow);
+        // Capture possibilities (diagonal) and promotion captures
+        addCaptureMoveIfValid(possibilities, position.getRow() + direction, position.getColumn() + 1, promotionRow);
+        addCaptureMoveIfValid(possibilities, position.getRow() + direction, position.getColumn() - 1, promotionRow);
 
-        return moves;
+        return possibilities;
     }
 
-    private void addMoveIfValid(Collection<ChessMove> moves, int row, int col, boolean isDoubleMove, int promotionRow) {
+    private void addAValidMove(Collection<ChessMove> possibilities, int row, int col, boolean isDoubleMove, int promotionRow) {
         if (row <= 0 || row > 8 || col <= 0 || col > 8 || board.getPiece(new ChessPosition(row, col)) != null) {
             return;
         }
@@ -50,15 +50,15 @@ class PawnMovement extends ChessPieceMovement {
             // Add a move for each possible promotion type
             for (ChessPiece.PieceType promotionType : ChessPiece.PieceType.values()) {
                 if (promotionType != ChessPiece.PieceType.PAWN && promotionType != ChessPiece.PieceType.KING) {
-                    moves.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
+                    possibilities.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
                 }
             }
         } else {
-            moves.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
+            possibilities.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
         }
     }
 
-    private void addCaptureMoveIfValid(Collection<ChessMove> moves, int row, int col, int promotionRow) {
+    private void addCaptureMoveIfValid(Collection<ChessMove> possibilities, int row, int col, int promotionRow) {
         if (row <= 0 || row > 8 || col <= 0 || col > 8) {
             return;
         }
@@ -68,11 +68,11 @@ class PawnMovement extends ChessPieceMovement {
                 // Add a capture move for each possible promotion type
                 for (ChessPiece.PieceType promotionType : ChessPiece.PieceType.values()) {
                     if (promotionType != ChessPiece.PieceType.PAWN && promotionType != ChessPiece.PieceType.KING) {
-                        moves.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
+                        possibilities.add(new ChessMove(position, new ChessPosition(row, col), promotionType));
                     }
                 }
             } else {
-                moves.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
+                possibilities.add(new ChessMove(position, new ChessPosition(row, col), null)); // No promotion
             }
         }
     }
@@ -91,7 +91,7 @@ class RookMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> possibilities = new ArrayList<>();
         int[][] directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}}; // Cross directions
 
 
@@ -120,18 +120,18 @@ class RookMovement extends ChessPieceMovement {
                         break;
                     }
                     // If the piece is of the opposite color, add move (capture) and break
-                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                    possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
                     break;
                 }
 
 
                 // Add the move if the square is empty
-                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
             }
         }
 
 
-        return moves;
+        return possibilities;
     }
 }
 
@@ -144,47 +144,24 @@ class KnightMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
-        int[][] directions = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}}; // Diagonal directions
-
+        Collection<ChessMove> possibilities = new ArrayList<>();
+        int[][] directions = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}}; // knight directions
 
         for (int[] direction : directions) {
-            int currentRow = position.getRow();
-            int currentColumn = position.getColumn();
+            int currentRow = position.getRow() + direction[0];
+            int currentColumn = position.getColumn() + direction[1];
 
-
-            while (true) {
-                currentRow += direction[0];
-                currentColumn += direction[1];
-
-
-                if (currentRow <= 0 || currentRow > 8 || currentColumn <= 0 || currentColumn > 8) {
-                    break; // Stop if it's off the board
-                }
-
-
+            if (currentRow > 0 && currentRow <= 8 && currentColumn > 0 && currentColumn <= 8) {
                 ChessPosition newPosition = new ChessPosition(currentRow, currentColumn);
                 ChessPiece pieceAtNewPosition = board.getPiece(newPosition);
 
-
-                if (pieceAtNewPosition != null) {
-                    // If the piece is of the same color, break (blocked)
-                    if (pieceAtNewPosition.getTeamColor() == this.board.getPiece(this.position).getTeamColor()) {
-                        break;
-                    }
-                    // If the piece is of the opposite color, add move (capture) and break
-                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
-                    break;
+                if (pieceAtNewPosition == null || pieceAtNewPosition.getTeamColor() != this.board.getPiece(this.position).getTeamColor()) {
+                    possibilities.add(new ChessMove(this.position, newPosition, null));
                 }
-
-
-                // Add the move if the square is empty
-                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
             }
         }
 
-
-        return moves;
+        return possibilities;
     }
 }
 
@@ -196,7 +173,7 @@ class BishopMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> possibilities = new ArrayList<>();
         int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}}; // Diagonal directions
 
 
@@ -225,18 +202,18 @@ class BishopMovement extends ChessPieceMovement {
                         break;
                     }
                     // If the piece is of the opposite color, add move (capture) and break
-                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                    possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
                     break;
                 }
 
 
                 // Add the move if the square is empty
-                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
             }
         }
 
 
-        return moves;
+        return possibilities;
     }
 }
 
@@ -248,7 +225,7 @@ class QueenMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> possibilities = new ArrayList<>();
         int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}, {0, 1}, {1, 0}, {-1, 0}, {0, -1}}; // Cross and Diagonal directions
 
 
@@ -277,18 +254,18 @@ class QueenMovement extends ChessPieceMovement {
                         break;
                     }
                     // If the piece is of the opposite color, add move (capture) and break
-                    moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                    possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
                     break;
                 }
 
 
                 // Add the move if the square is empty
-                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
+                possibilities.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for pawn promotion
             }
         }
 
 
-        return moves;
+        return possibilities;
     }
 }
 
@@ -300,7 +277,7 @@ class KingMovement extends ChessPieceMovement {
 
     @Override
     public Collection<ChessMove> pieceMoves() {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> possibilities = new ArrayList<>();
         int[][] directions = {
                 {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}
         }; // All 8 directions around the king
@@ -326,16 +303,16 @@ class KingMovement extends ChessPieceMovement {
                     continue;
                 }
                 // If the piece is of the opposite color, it can be captured
-                moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for special cases like promotion
+                possibilities.add(new ChessMove(this.position, newPosition, null));
                 continue;
             }
 
 
             // Add the move if the square is empty
-            moves.add(new ChessMove(this.position, newPosition, null)); // Assuming null is for special cases like promotion
+            possibilities.add(new ChessMove(this.position, newPosition, null));
         }
 
 
-        return moves;
+        return possibilities;
     }
 }
