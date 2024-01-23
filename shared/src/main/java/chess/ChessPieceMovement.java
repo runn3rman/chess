@@ -1,7 +1,8 @@
 package chess;
 import java.util.ArrayList;
 import java.util.Collection;
-
+//TODO maybe add a isLimited parameter to my traverse board
+// TODO add conditions to the traverse while loop
 public abstract class ChessPieceMovement {
     protected ChessBoard board;
     protected ChessPosition position;
@@ -16,22 +17,22 @@ public abstract class ChessPieceMovement {
     public abstract Collection<ChessMove> pieceMoves();
 
     // Method to traverse the board in specific directions
-    protected void traverseBoard(Collection<ChessMove> moves, int[][] paths) {
+    protected void traverseBoard(Collection<ChessMove> moves, int[][] paths, boolean isLimited) {
         for (int[] path : paths) {
             int tempRow = position.getRow();
             int tempCol = position.getColumn();
 
             // Loop to move along a path until a block or edge
-            while (true) {
-                tempRow += path[0];
-                tempCol += path[1];
-                ChessPosition newPos = new ChessPosition(tempRow, tempCol);
+            do {
+                    tempRow += path[0];
+                    tempCol += path[1];
+                    ChessPosition newPos = new ChessPosition(tempRow, tempCol);
 
-                // Break the loop if a move cannot be added
-                if (!tryAddMove(moves, newPos)) {
-                    break;
-                }
-            }
+                    // Break the loop if a move cannot be added
+                    if (!tryAddMove(moves, newPos)) {
+                        break;
+                    }
+            } while(!isLimited);
         }
     }
 
@@ -68,7 +69,7 @@ class RookMovement extends ChessPieceMovement {
     public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> rookPaths = new ArrayList<>();
         int[][] moveVectors = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}}; // Horizontal and Vertical movement
-        traverseBoard(rookPaths, moveVectors);
+        traverseBoard(rookPaths, moveVectors, false);
         return rookPaths;
     }
 }
@@ -82,7 +83,7 @@ class BishopMovement extends ChessPieceMovement {
     public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> bishopTrajectories = new ArrayList<>();
         int[][] diagonalVectors = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}}; // Diagonal movement
-        traverseBoard(bishopTrajectories, diagonalVectors);
+        traverseBoard(bishopTrajectories, diagonalVectors, false);
         return bishopTrajectories;
     }
 }
@@ -96,7 +97,7 @@ class QueenMovement extends ChessPieceMovement {
     public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> queenRoutes = new ArrayList<>();
         int[][] combinedVectors = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}, {0, 1}, {1, 0}, {-1, 0}, {0, -1}}; // Combining Rook and Bishop movements
-        traverseBoard(queenRoutes, combinedVectors);
+        traverseBoard(queenRoutes, combinedVectors,false);
         return queenRoutes;
     }
 }
@@ -180,20 +181,7 @@ class KnightMovement extends ChessPieceMovement {
     public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> knightHops = new ArrayList<>();
         int[][] leapPatterns = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}}; // Knight's unique movements
-
-        for (int[] leap : leapPatterns) {
-            int newRow = position.getRow() + leap[0];
-            int newCol = position.getColumn() + leap[1];
-            ChessPosition newPosition = new ChessPosition(newRow, newCol);
-
-            if (isWithinBoard(newRow, newCol)) {
-                ChessPiece pieceAtLeapEnd = board.getPiece(newPosition);
-                if (pieceAtLeapEnd == null || pieceAtLeapEnd.getTeamColor() != this.board.getPiece(this.position).getTeamColor()) {
-                    knightHops.add(new ChessMove(this.position, newPosition, null));
-                }
-            }
-        }
-
+        traverseBoard(knightHops, leapPatterns, true);
         return knightHops;
     }
 
@@ -206,24 +194,11 @@ class KingMovement extends ChessPieceMovement {
     public KingMovement(ChessBoard board, ChessPosition position) {
         super(board, position);
     }
-
     @Override
     public Collection<ChessMove> pieceMoves() {
         Collection<ChessMove> kingSteps = new ArrayList<>();
         int[][] surroundingSquares = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}; // King's one-step movement
-
-        for (int[] step : surroundingSquares) {
-            int newRow = position.getRow() + step[0];
-            int newCol = position.getColumn() + step[1];
-            if (newRow > 0 && newRow <= 8 && newCol > 0 && newCol <= 8) {
-                ChessPosition newPos = new ChessPosition(newRow, newCol);
-                ChessPiece pieceAtNewPos = board.getPiece(newPos);
-                if (pieceAtNewPos == null || pieceAtNewPos.getTeamColor() != this.board.getPiece(this.position).getTeamColor()) {
-                    kingSteps.add(new ChessMove(this.position, newPos, null));
-                }
-            }
-        }
-
+        traverseBoard(kingSteps,surroundingSquares,true);
         return kingSteps;
     }
 }
