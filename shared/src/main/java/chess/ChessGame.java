@@ -186,7 +186,7 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
-    /*public boolean isInCheckmate(TeamColor teamColor) {
+    public boolean isInCheckmate(TeamColor teamColor) {
         // 1. Check if the King is in Check
         if (!isInCheck(teamColor)) {
             return false;  // If the king is not in check, it can't be in checkmate.
@@ -210,7 +210,7 @@ public class ChessGame {
         // 4. Determine Checkmate
         return true; // If no moves can take the king out of check, it's checkmate.
     }
-*/
+
     /**
      * Generate all possible moves for the specified team.
      *
