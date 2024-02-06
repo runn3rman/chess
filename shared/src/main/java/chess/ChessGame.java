@@ -245,7 +245,7 @@ public class ChessGame {
      *
      * @param move the move to make
      */
-    private void makeTempMove(ChessMove move) {
+    private void makeTempMove(ChessMove move) { //more helpers
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(start);
@@ -268,7 +268,7 @@ public class ChessGame {
      *
      * @param move the move to undo
      */
-    private void undoTempMove(ChessMove move) {
+    private void undoTempMove(ChessMove move) { //more helpers
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
 
