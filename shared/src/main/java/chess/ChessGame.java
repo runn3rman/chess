@@ -12,14 +12,14 @@ public class ChessGame {
     private ChessBoard board;
     private TeamColor currentTeamTurn;
     public ChessGame() {
-        this.currentTeamTurn = TeamColor.WHITE;
+        //this.currentTeamTurn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return this.currentTeamTurn;
     }
 
     /**
@@ -28,7 +28,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.currentTeamTurn = team;
     }
 
     /**
@@ -47,7 +47,13 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            // No piece at the given position
+            return null;
+        }
+
+        return piece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -96,7 +102,45 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findKingPosition(teamColor);
+        if (kingPosition == null) {
+            // King not found, should not happen if the board is in a valid state
+            return false;
+        }
+
+        // Check if any of the opposing team's pieces can capture the King
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    // It's an opposing piece, check its valid moves
+                    Collection<ChessMove> moves = validMoves(position);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            // King can be captured by this move
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // No opposing pieces can capture the King
+        return false;
+    }
+
+    private ChessPosition findKingPosition(TeamColor teamColor) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor && piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return position; // Found the King
+                }
+            }
+        }
+        return null; // King not found
     }
 
     /**
