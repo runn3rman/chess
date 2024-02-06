@@ -80,7 +80,7 @@ public class ChessGame {
     // Helper method to check if a square is under attack
     private boolean isSquareUnderAttack(ChessPosition position, TeamColor attackerColor) {
         for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
+            for (int col = 1; col <= 8; col++) { //go through each square
                 ChessPosition currentPosition = new ChessPosition(row, col);
                 ChessPiece currentPiece = board.getPiece(currentPosition);
                 if (currentPiece != null && currentPiece.getTeamColor() == attackerColor) {
@@ -111,7 +111,7 @@ public class ChessGame {
             throw new InvalidMoveException("It's not " + piece.getTeamColor() + "'s turn.");
         }
 
-        Collection<ChessMove> legalMoves = validMoves(move.getStartPosition());
+        Collection<ChessMove> legalMoves = validMoves(move.getStartPosition()); //get all Valid moves to check
         if (legalMoves != null && legalMoves.contains(move)) {
             // Execute the move
             board.addPiece(move.getEndPosition(), piece);
