@@ -165,7 +165,7 @@ public class ChessGame {
         return false;
     }
 
-    private ChessPosition findKingPosition(TeamColor teamColor) {
+    private ChessPosition findKingPosition(TeamColor teamColor) { //helper function
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
@@ -217,7 +217,7 @@ public class ChessGame {
      * @param teamColor the color of the team
      * @return a collection of all possible moves
      */
-    private Collection<ChessMove> getAllPossibleMoves(TeamColor teamColor) {
+    private Collection<ChessMove> getAllPossibleMoves(TeamColor teamColor) { //helper function
         Collection<ChessMove> allMoves = new ArrayList<>();
         // Traverse the entire board
         for (int row = 1; row <= 8; row++) {
