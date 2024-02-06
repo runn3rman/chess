@@ -291,7 +291,7 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
-   /* public boolean isInStalemate(TeamColor teamColor) {
+    public boolean isInStalemate(TeamColor teamColor) {
         // If the team is in check, it's not a stalemate.
         if (isInCheck(teamColor)) {
             return false;
@@ -316,7 +316,7 @@ public class ChessGame {
         // If no valid moves are available, it's a stalemate.
         return true;
     }
-*/
+
     /**
      * Sets this game's chessboard with a given board
      *
