@@ -102,7 +102,7 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    /*public void makeMove(ChessMove move) throws InvalidMoveException {
+    public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) {
             throw new InvalidMoveException("No piece at the start position.");
@@ -128,7 +128,7 @@ public class ChessGame {
             throw new InvalidMoveException("This move is not allowed.");
         }
     }
-*/
+
 
     /**
      * Determines if the given team is in check
