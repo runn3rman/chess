@@ -1,8 +1,7 @@
 package chess;
 import java.util.ArrayList;
 import java.util.Collection;
-//TODO maybe add a isLimited parameter to my traverse board
-// TODO add conditions to the traverse while loop
+
 public abstract class ChessPieceMovement {
     protected ChessBoard board;
     protected ChessPosition position;

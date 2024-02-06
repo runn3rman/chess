@@ -9,9 +9,10 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    private ChessBoard board;
+    private TeamColor currentTeamTurn;
     public ChessGame() {
-
+        this.currentTeamTurn = TeamColor.WHITE;
     }
 
     /**
@@ -56,8 +57,37 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null || piece.getTeamColor() != currentTeamTurn) {
+            throw new InvalidMoveException("Invalid move: No piece at the starting position or not your turn.");
+        }
+
+        if (!isValidDestination(move, piece)) {
+            throw new InvalidMoveException("Invalid move: Destination is not valid for the given piece.");
+        }
+
+        // If there's a piece at the destination position, it's captured (can add logic to keep track of captured pieces if needed)
+        ChessPiece pieceAtDestination = board.getPiece(move.getEndPosition());
+        if (pieceAtDestination != null && pieceAtDestination.getTeamColor() != piece.getTeamColor()) {
+            // Capture the piece (in this basic implementation, just remove it from the board)
+            board.addPiece(move.getEndPosition(), null);
+        }
+
+        // Move the piece to the new position
+        board.addPiece(move.getStartPosition(), null); // Remove from the original position
+        board.addPiece(move.getEndPosition(), piece); // Place at the new position
+
+        // Switch turn to the other player
+        currentTeamTurn = (currentTeamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
     }
+
+    private boolean isValidDestination(ChessMove move, ChessPiece piece) {
+        // Implement the logic to check if the destination is a valid move for the piece
+        // use the piece.pieceMoves() method
+        // replace with real validation logic
+        return true;
+    }
+
 
     /**
      * Determines if the given team is in check
@@ -96,7 +126,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +135,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.board;
     }
 }
