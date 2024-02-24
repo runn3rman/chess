@@ -2,10 +2,16 @@ package server;
 
 import handlers.*;
 import service.ClearService;
+import dataAccess.UserDao;
+import dataAccess.GameDao;
+import dataAccess.AuthTokenDao;
+import service.CreateGameService;
+import service.LoginService;
+import service.LogoutService;
 import spark.*;
 
 public class Server {
-    private ClearService clearService = new ClearService();
+    private ClearService clearService;
 
 
     public static void main(String[] args){
@@ -16,11 +22,26 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        UserDao userDao = new UserDao();
+        GameDao gameDao = new GameDao();
+        AuthTokenDao authTokenDao = new AuthTokenDao();
+        clearService = new ClearService(userDao, gameDao, authTokenDao);
+        ClearHandler clearHandler = new ClearHandler(clearService);
+        LoginService loginService = new LoginService(new UserDao(), new AuthTokenDao());
+        LoginHandler loginHandler = new LoginHandler(loginService);
+        LogoutService logoutService = new LogoutService(new AuthTokenDao());
+        LogoutHandler logoutHandler = new LogoutHandler(logoutService);
+        CreateGameService createGameService = new CreateGameService(new GameDao(), new AuthTokenDao());
+        CreateGameHandler createGameHandler = new CreateGameHandler(createGameService);
+
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", this::clearAll);
+        Spark.delete("/db", clearHandler::handleRequest);
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler()).handleRequest(req,
                         res));
+        Spark.post("/session", loginHandler::handleRequest);
+        Spark.delete("/session", logoutHandler::handleRequest);
+        Spark.post("/game", createGameHandler::handleRequest);
 
 
 
@@ -31,13 +52,6 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
-    }
-
-
-    private Object clearAll(Request req, Response res) {
-        clearService.clearApplication();
-        res.status(200);
-        return "{}"; //TODO return JSON object {}.
     }
 
 
