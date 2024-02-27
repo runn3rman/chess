@@ -7,5 +7,15 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    // Getters and setters
+    // Getter
+    public String getMessage() {
+        return message;
+    }
+
+    // Setter
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
+
+

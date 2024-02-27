@@ -26,5 +26,18 @@ public class AuthTokenDao {
             return false; // Token was not found
         }
     }
+
+    public String extractUsername(String authToken) {
+        AuthData authData = authTokens.get(authToken);
+        if (authData != null) {
+            return authData.username();
+        } else {
+            return null; // Or throw an exception
+        }
+    }
+    public boolean isValidAuthToken(String authToken) {
+        // Check if the provided authToken exists in the authTokens map
+        return authTokens.containsKey(authToken);
+    }
     // Additional methods as needed...
 }

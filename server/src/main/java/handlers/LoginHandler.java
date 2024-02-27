@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import model.AuthResponse;
 import model.ErrorResponse;
 import model.AuthData;
 import model.LoginRequest;
@@ -22,10 +23,14 @@ public class LoginHandler {
             AuthData authData = loginService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
             res.status(200); // OK
-            return gson.toJson(authData);
+            res.type("application/json"); // Ensure response type is set to application/json
+            return gson.toJson(new AuthResponse(authData.username(), authData.authToken()));
         } catch (Exception e) {
             res.status(e.getMessage().equals("Invalid username or password") ? 401 : 500);
-            return gson.toJson(new ErrorResponse(e.getMessage()));
+            res.type("application/json"); // Set Content-Type as application/json
+            String errorMessage = e.getMessage().equals("Invalid username or password") ? "Error: unauthorized" : "Error: " + e.getMessage();
+            ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            return gson.toJson(errorResponse); // Use the errorResponse object for serialization
         }
     }
 }

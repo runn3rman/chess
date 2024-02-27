@@ -24,7 +24,8 @@ public class LoginService {
             authTokenDao.insertAuthToken(authData);
             return authData;
         } else {
-            throw new Exception("Invalid username or password");
+            throw new Exception("Invalid username or password"); // Consistent error message
         }
     }
+
 }

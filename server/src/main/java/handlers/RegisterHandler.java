@@ -15,8 +15,14 @@ public class RegisterHandler {
     private Gson gson = new Gson();
 
     public Object handleRequest(Request req, Response res) {
+        RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
+        // Validate the request fields
+        if (registerRequest.getUsername() == null || registerRequest.getPassword() == null || registerRequest.getEmail() == null) {
+            res.status(400); // Bad Request status
+            return gson.toJson(new ErrorResponse("Error: bad request"));
+        }
+
         try {
-            RegisterRequest registerRequest = gson.fromJson(req.body(), RegisterRequest.class);
             UserData newUser = new UserData(
                     registerRequest.getUsername(),
                     registerRequest.getPassword(),
@@ -31,6 +37,7 @@ public class RegisterHandler {
                 res.status(403); // Forbidden status
                 return gson.toJson(new ErrorResponse("Error: already taken"));
             } else {
+                // This else block might not be necessary if all DataAccessExceptions are handled above
                 res.status(400); // Bad Request status
                 return gson.toJson(new ErrorResponse("Error: bad request"));
             }
