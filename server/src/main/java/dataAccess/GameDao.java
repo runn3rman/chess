@@ -16,7 +16,7 @@ public class GameDao {
     public int insertGame(String gameName) {
         int gameID = gameIDCounter.incrementAndGet();
         // Initialize whiteUsername, blackUsername as null or empty, and create a new ChessGame instance
-        GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
+        GameData game = new GameData(gameID, null, null, gameName, new ChessGame()); //switched from empty to null
         games.put(gameID, game);
         return gameID;
     }
