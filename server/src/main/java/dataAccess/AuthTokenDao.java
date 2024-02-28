@@ -1,3 +1,4 @@
+//Maybe I should add an extract AuthToken
 package dataAccess;
 
 import model.AuthData;
