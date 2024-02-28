@@ -1,3 +1,4 @@
+//consider removing functions that I never actually use. future reference
 package model;
 
 import chess.ChessGame;
