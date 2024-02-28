@@ -1,3 +1,4 @@
+//I should get rid of the unused methods
 package model;
 
 public class JoinGameRequest {
