@@ -27,7 +27,7 @@ public class AuthTokenDao {
         }
     }
 
-    public String extractUsername(String authToken) {
+    public String extractUsername(String authToken) { //consider changing naming
         AuthData authData = authTokens.get(authToken);
         if (authData != null) {
             return authData.username();
