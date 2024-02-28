@@ -13,7 +13,7 @@ public class JoinGameService {
         this.authTokenDao = authTokenDao;
     }
 
-    public void joinGame(String authToken, JoinGameRequest request) throws Exception {
+    public void joinGame(String authToken, JoinGameRequest request) throws Exception { //added the correct authentication logic
         // Check if the authToken is valid
         if (!authTokenDao.isValidAuthToken(authToken)) {
             throw new Exception("Invalid or expired authToken.");
