@@ -56,14 +56,20 @@ public class GameDao {
 
     public boolean isColorTaken(int gameID, String playerColor) {
         GameData game = games.get(gameID);
-        if (game == null) return false; // Game does not exist
+        if (game == null) {
+            // Game does not exist
+            return false;
+        }
 
         if ("WHITE".equalsIgnoreCase(playerColor)) {
+            // Check if white position is taken
             return game.getWhiteUsername() != null && !game.getWhiteUsername().isEmpty();
         } else if ("BLACK".equalsIgnoreCase(playerColor)) {
+            // Check if black position is taken
             return game.getBlackUsername() != null && !game.getBlackUsername().isEmpty();
         } else {
-            // For observers, color is not taken
+            // For any color not recognized as WHITE or BLACK, treat it as not taken
+            // This is useful for observer roles or if game logic includes other colors/roles
             return false;
         }
     }
