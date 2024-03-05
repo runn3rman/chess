@@ -39,3 +39,9 @@ Exceptions
     - Do "or" catches
     
     Finally blocks excecute no matter what
+
+
+Databases (3/5/24)
+
+    Create a utility class, one method for hash and encode
+    Don't store password in clear text, store hashed
