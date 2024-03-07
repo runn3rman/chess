@@ -1,44 +1,49 @@
-//Maybe I should add an extract AuthToken
 package dataAccess;
 
 import model.AuthData;
 
 import java.util.HashMap;
 
-public class AuthTokenDao {
+public class AuthTokenDao implements AuthTokenDaoInterface {
     private static final HashMap<String, AuthData> authTokens = new HashMap<>();
 
+    @Override
     public void clearAuthTokens() {
         authTokens.clear();
     }
+
+    @Override
     public void insertAuthToken(AuthData authData) {
         authTokens.put(authData.authToken(), authData);
     }
 
+    @Override
     public AuthData getAuthData(String authToken) {
         return authTokens.get(authToken);
     }
 
+    @Override
     public boolean deleteAuthToken(String authToken) {
         if (authTokens.containsKey(authToken)) {
             authTokens.remove(authToken);
-            return true; // Token was found and removed
+            return true;
         } else {
-            return false; // Token was not found
+            return false;
         }
     }
 
-    public String extractUsername(String authToken) { //consider changing naming
+    @Override
+    public String extractUsername(String authToken) {
         AuthData authData = authTokens.get(authToken);
         if (authData != null) {
             return authData.username();
         } else {
-            return null; // Or throw an exception
+            return null;
         }
     }
+
+    @Override
     public boolean isValidAuthToken(String authToken) {
-        // Check if the provided authToken exists in the authTokens map
         return authTokens.containsKey(authToken);
     }
-    // Additional methods as needed...
 }
