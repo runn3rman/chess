@@ -1,17 +1,14 @@
 package service;
 
-import dataAccess.DataAccessException;
-import dataAccess.UserDao;
-import dataAccess.GameDao;
-import dataAccess.AuthTokenDao;
+import dataAccess.*;
 
 public class ClearService {
-    private UserDao userDao;
-    private GameDao gameDao;
-    private AuthTokenDao authTokenDao;
+    private UserDaoInterface userDao;
+    private GameDaoInterface gameDao;
+    private AuthTokenDaoInterface authTokenDao;
 
     // Constructor with DAOs
-    public ClearService(UserDao userDao, GameDao gameDao, AuthTokenDao authTokenDao) {
+    public ClearService(UserDaoInterface userDao, GameDaoInterface gameDao, AuthTokenDaoInterface authTokenDao) {
         this.userDao = userDao;
         this.gameDao = gameDao;
         this.authTokenDao = authTokenDao;

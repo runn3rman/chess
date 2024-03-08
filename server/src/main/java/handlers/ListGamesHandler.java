@@ -1,8 +1,9 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataAccess.AuthTokenDaoInterface;
 import model.GameData;
-import dataAccess.AuthTokenDao;
+import dataAccess.MemoryAuthTokenDao;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -12,10 +13,10 @@ import java.util.Map;
 
 public class ListGamesHandler {
     private final GameService gameService;
-    private final AuthTokenDao authTokenDao;
+    private final AuthTokenDaoInterface authTokenDao;
     private final Gson gson = new Gson();
 
-    public ListGamesHandler(GameService gameService, AuthTokenDao authTokenDao) {
+    public ListGamesHandler(GameService gameService, AuthTokenDaoInterface authTokenDao) {
         this.gameService = gameService;
         this.authTokenDao = authTokenDao;
     }

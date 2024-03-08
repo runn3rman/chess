@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameDao implements GameDaoInterface {
+public class MemoryGameDao implements GameDaoInterface {
     private final HashMap<Integer, GameData> games = new HashMap<>();
     private final AtomicInteger gameIDCounter = new AtomicInteger();
 

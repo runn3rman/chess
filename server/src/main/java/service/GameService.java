@@ -1,13 +1,13 @@
 package service;
 
-import dataAccess.GameDao;
+import dataAccess.GameDaoInterface;
 import model.GameData;
 import java.util.List;
 
 public class GameService {
-    private final GameDao gameDao;
+    private final GameDaoInterface gameDao;
 
-    public GameService(GameDao gameDao) {
+    public GameService(GameDaoInterface gameDao) {
         this.gameDao = gameDao;
     }
 

@@ -1,8 +1,8 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataAccess.AuthTokenDao;
-import model.AuthData;
+import dataAccess.AuthTokenDaoInterface;
+import dataAccess.MemoryAuthTokenDao;
 import model.ErrorResponse;
 import service.LogoutService;
 import spark.Request;
@@ -10,10 +10,10 @@ import spark.Response;
 
 public class LogoutHandler {
     private LogoutService logoutService;
-    private final AuthTokenDao authTokenDao;
+    private final AuthTokenDaoInterface authTokenDao;
     private Gson gson = new Gson();
 
-    public LogoutHandler(LogoutService logoutService, AuthTokenDao authTokenDao) {
+    public LogoutHandler(LogoutService logoutService, AuthTokenDaoInterface authTokenDao) {
         this.logoutService = logoutService;
         this.authTokenDao = authTokenDao;
     }

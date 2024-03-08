@@ -1,11 +1,12 @@
 package service;
 
-import dataAccess.AuthTokenDao;
+import dataAccess.AuthTokenDaoInterface;
+import dataAccess.MemoryAuthTokenDao;
 
 public class LogoutService {
-    private AuthTokenDao authTokenDao;
+    private AuthTokenDaoInterface authTokenDao;
 
-    public LogoutService(AuthTokenDao authTokenDao) {
+    public LogoutService(AuthTokenDaoInterface authTokenDao) {
         this.authTokenDao = authTokenDao;
     }
 

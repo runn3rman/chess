@@ -1,13 +1,13 @@
 package service;
 
-import dataAccess.GameDao;
-import dataAccess.AuthTokenDao;
+import dataAccess.AuthTokenDaoInterface;
+import dataAccess.GameDaoInterface;
 
 public class CreateGameService {
-    private GameDao gameDao;
-    private AuthTokenDao authTokenDao;
+    private GameDaoInterface gameDao;
+    private AuthTokenDaoInterface authTokenDao;
 
-    public CreateGameService(GameDao gameDao, AuthTokenDao authTokenDao) {
+    public CreateGameService(GameDaoInterface gameDao, AuthTokenDaoInterface authTokenDao) {
         this.gameDao = gameDao;
         this.authTokenDao = authTokenDao;
     }

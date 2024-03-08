@@ -34,7 +34,7 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public static void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             var conn = DriverManager.getConnection(connectionUrl, user, password);
@@ -58,6 +58,47 @@ public class DatabaseManager {
      * }
      * </code>
      */
+
+    private static final String CREATE_USERS_TABLE = """
+        CREATE TABLE IF NOT EXISTS users (
+            username VARCHAR(255) PRIMARY KEY,
+            password_hash VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL
+        );
+        """;
+
+    private static final String CREATE_GAMES_TABLE = """
+        CREATE TABLE IF NOT EXISTS games (
+            game_id INT AUTO_INCREMENT PRIMARY KEY,
+            game_name VARCHAR(255) NOT NULL,
+            game_state_json TEXT NOT NULL,
+            white_username VARCHAR(255),
+            black_username VARCHAR(255),
+            FOREIGN KEY (white_username) REFERENCES users(username),
+            FOREIGN KEY (black_username) REFERENCES users(username)
+        );
+        """;
+
+    private static final String CREATE_AUTHTOKENS_TABLE = """
+        CREATE TABLE IF NOT EXISTS authtokens (
+            token VARCHAR(255) PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            FOREIGN KEY (username) REFERENCES users(username)
+        );
+        """;
+
+
+    public static void initializeDatabaseTables() throws DataAccessException {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(CREATE_USERS_TABLE);
+            stmt.execute(CREATE_GAMES_TABLE);
+            stmt.execute(CREATE_AUTHTOKENS_TABLE);
+        } catch (SQLException e) {
+            throw new DataAccessException("Error initializing database tables: " + e.getMessage());
+        }
+    }
+
     static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(connectionUrl, user, password);

@@ -1,10 +1,8 @@
 package server;
 
+import dataAccess.*;
 import handlers.*;
 import service.*;
-import dataAccess.UserDao;
-import dataAccess.GameDao;
-import dataAccess.AuthTokenDao;
 import spark.*;
 
 public class Server {
@@ -15,14 +13,26 @@ public class Server {
     }
 
     public int run(int desiredPort) {
+        // Initialize the database and tables before starting the server
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.initializeDatabaseTables();
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            System.exit(1); // Exit if we can't set up the database
+        }
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         // Singleton instances of DAOs
-        UserDao userDao = new UserDao();
-        GameDao gameDao = new GameDao();
-        AuthTokenDao authTokenDao = new AuthTokenDao(); // Create an instance of AuthTokenDao
+        //UserDaoInterface userDao = new MemoryUserDao();
+        //GameDaoInterface gameDao = new MemoryGameDao();
+        //AuthTokenDaoInterface authTokenDao = new MemoryAuthTokenDao(); // Create an instance of AuthTokenDao
+
+        UserDaoInterface userDao = new SqlUserDao();
+        GameDaoInterface gameDao = new SqlGameDao();
+        AuthTokenDaoInterface authTokenDao = new SqlAuthTokenDao();
 
         // Services with singleton DAOs
         clearService = new ClearService(userDao, gameDao, authTokenDao);
@@ -30,7 +40,6 @@ public class Server {
         LogoutService logoutService = new LogoutService(authTokenDao); // Uses singleton AuthTokenDao
         CreateGameService createGameService = new CreateGameService(gameDao, authTokenDao); // Uses singleton DAOs
         GameService gameService = new GameService(gameDao); // Uses singleton GameDao
-        // Inside your Server class
         JoinGameService joinGameService = new JoinGameService(gameDao, authTokenDao); // Now correctly instantiated
 
         // Handlers with services

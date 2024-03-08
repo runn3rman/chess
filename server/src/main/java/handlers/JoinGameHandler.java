@@ -1,21 +1,23 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataAccess.AuthTokenDaoInterface;
+import dataAccess.GameDaoInterface;
 import model.JoinGameRequest;
 import service.JoinGameService;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
-import dataAccess.AuthTokenDao;
-import dataAccess.GameDao;
+import dataAccess.MemoryAuthTokenDao;
+import dataAccess.MemoryGameDao;
 
 public class JoinGameHandler {
     private final JoinGameService joinGameService;
-    private final AuthTokenDao authTokenDao;
-    private final GameDao gameDao;
+    private final AuthTokenDaoInterface authTokenDao;
+    private final GameDaoInterface gameDao;
     private final Gson gson = new Gson();
 
-    public JoinGameHandler(JoinGameService joinGameService, AuthTokenDao authTokenDao, GameDao gameDao) {
+    public JoinGameHandler(JoinGameService joinGameService, AuthTokenDaoInterface authTokenDao, GameDaoInterface gameDao) {
         this.joinGameService = joinGameService;
         this.authTokenDao = authTokenDao;
         this.gameDao = gameDao;

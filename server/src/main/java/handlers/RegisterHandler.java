@@ -1,7 +1,9 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataAccess.AuthTokenDaoInterface;
 import dataAccess.DataAccessException;
+import dataAccess.UserDaoInterface;
 import model.AuthData;
 import model.ErrorResponse;
 import model.RegisterRequest;
@@ -11,6 +13,8 @@ import spark.Request;
 import spark.Response;
 
 public class RegisterHandler {
+
+
     private RegisterService registerService = new RegisterService();
     private Gson gson = new Gson();
 

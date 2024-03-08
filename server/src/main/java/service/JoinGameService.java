@@ -1,14 +1,16 @@
 package service;
 
-import dataAccess.GameDao;
+import dataAccess.AuthTokenDaoInterface;
+import dataAccess.GameDaoInterface;
+import dataAccess.MemoryGameDao;
 import model.JoinGameRequest;
-import dataAccess.AuthTokenDao;
+import dataAccess.MemoryAuthTokenDao;
 
 public class JoinGameService {
-    private final GameDao gameDao;
-    private final AuthTokenDao authTokenDao;
+    private final GameDaoInterface gameDao;
+    private final AuthTokenDaoInterface authTokenDao;
 
-    public JoinGameService(GameDao gameDao, AuthTokenDao authTokenDao) {
+    public JoinGameService(GameDaoInterface gameDao, AuthTokenDaoInterface authTokenDao) {
         this.gameDao = gameDao;
         this.authTokenDao = authTokenDao;
     }

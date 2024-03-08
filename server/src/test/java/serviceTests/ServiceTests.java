@@ -1,22 +1,20 @@
 //TODO, make sure that the tests all pass. join game successes.
 package serviceTests;
 
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import dataAccess.*;
 import service.*;
 import model.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServiceTests {
 
-    private static UserDao userDao;
-    private static GameDao gameDao;
-    private static AuthTokenDao authTokenDao;
+    private static MemoryUserDao userDao;
+    private static MemoryGameDao gameDao;
+    private static MemoryAuthTokenDao authTokenDao;
     private static CreateGameService createGameService;
     private static JoinGameService joinGameService;
     private static GameService gameService;
@@ -31,9 +29,9 @@ public class ServiceTests {
 
     @BeforeAll
     static void setUp() {
-        userDao = new UserDao();
-        gameDao = new GameDao();
-        authTokenDao = new AuthTokenDao();
+        userDao = new MemoryUserDao();
+        gameDao = new MemoryGameDao();
+        authTokenDao = new MemoryAuthTokenDao();
         createGameService = new CreateGameService(gameDao, authTokenDao);
         gameService = new GameService(gameDao);
         joinGameService = new JoinGameService(gameDao, authTokenDao);

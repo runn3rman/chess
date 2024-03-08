@@ -4,7 +4,7 @@ import model.AuthData;
 
 import java.util.HashMap;
 
-public class AuthTokenDao implements AuthTokenDaoInterface {
+public class MemoryAuthTokenDao implements AuthTokenDaoInterface {
     private static final HashMap<String, AuthData> authTokens = new HashMap<>();
 
     @Override

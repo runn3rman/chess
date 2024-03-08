@@ -2,8 +2,9 @@ package dataAccess;
 
 import model.UserData;
 import java.util.HashMap;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class UserDao implements UserDaoInterface {
+public class MemoryUserDao implements UserDaoInterface {
     private static final HashMap<String, UserData> users = new HashMap<>();
 
     @Override
@@ -23,6 +24,8 @@ public class UserDao implements UserDaoInterface {
         }
         users.put(user.username(), user);
     }
+
+
 
     //
 }
